@@ -13,7 +13,7 @@ inputs:
     required: true
   aws_region:
     description: 'AWS region. Default us-east-1'
-    default: : 'us-east-1'
+    default: 'us-east-1'
     required: false
   aws_bucket:
     description: 'Aws bucket name'
