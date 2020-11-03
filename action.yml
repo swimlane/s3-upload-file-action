@@ -1,0 +1,38 @@
+name: Upload file S3
+description: 'Upload file to S3'
+author: 'Swimlane developers'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+inputs:
+  aws_access_key_id:
+    description: 'Aws access key id'
+    required: true
+  aws_secret_access_key:
+    description: 'Aws secret access key'
+    required: true
+  aws_region:
+    description: 'AWS region. Default us-east-1'
+    default: : 'us-east-1'
+    required: false
+  aws_bucket:
+    description: 'Aws bucket name'
+    required: true
+  file_path:
+    required: true
+    description: 'File to upload'
+  file_mime_type:
+    required: false
+    default: 'text/plain'
+    description: 'File mime type'
+  dest_dir:
+    required: false
+    description: 'Destination directory for upload'
+outputs:
+  object_key:
+    description: 'object key'
+  object_location:
+    description: 'object location'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
