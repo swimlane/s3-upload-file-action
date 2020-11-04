@@ -1,5 +1,5 @@
 const core = require('@actions/core');
-const aws = require('aws-sdk');
+const S3 = require('aws-sdk/clients/s3');
 const fs = require('fs');
 const path = require('path');
 const shortid = require('shortid');
@@ -13,27 +13,32 @@ const FILE_PATH = core.getInput('file_path', req);
 const FILE_MIME_TYPE = core.getInput('file_mime_type');
 const DEST_DIR = core.getInput('dest_dir') || shortid();
 
-credentials = new aws.Credentials(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-aws.config.update({ region: AWS_REGION , credentials: credentials});
+const s3 = new S3({
+  apiVersion: '2006-03-01',
+  accessKeyId: AWS_ACCESS_KEY_ID,
+  secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  region: AWS_REGION
+})
 
 const fileStream = fs.createReadStream(FILE_PATH);
+const aws_file_path = path.join(DEST_DIR, path.basename(FILE_PATH))
+  .replace(/\\/g, '/');
 
 const uploadParams = {
   Bucket: AWS_BUCKET,
-  Key: path.join(DEST_DIR, path.basename(FILE_PATH)),
+  Key: aws_file_path,
   Body: fileStream,
   ACL: 'public-read',
   ContentType: FILE_MIME_TYPE
 };
 
-s3 = new aws.S3({apiVersion: '2006-03-01'});
 s3.upload(uploadParams, function (err, data) {
   if (err) {
     core.error(err);
     core.setFailed(err.message);
   } if (data) {
-    core.info(`Uploaded - ${data.Key}`);
-    core.info(`Located - ${data.Location}`);
+    core.info(`Uploaded: ${data.Key}`);
+    core.info(`Located: ${data.Location}`);
     core.setOutput('object_key', data.Key);
     core.setOutput('object_location', data.Location);
   }
