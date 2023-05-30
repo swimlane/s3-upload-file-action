@@ -10,7 +10,7 @@
     "package": "ncc build index.js -o dist"
   },
   "dependencies": {
-    "@actions/core": "^1.2.6",
+    "@actions/core": "^1.10.0",
     "aws-sdk": "^2.784.0",
     "shortid": "^2.2.15"
   },
